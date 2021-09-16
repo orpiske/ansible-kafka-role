@@ -7,6 +7,18 @@
     - vars/{{ ansible_distribution }}.yml
     - vars/{{ ansible_os_family }}.yml
 
+- name: Create download directory
+  become: yes
+  become_user: "{{ kafka_user }}"
+  tags:
+    - download
+  file:
+    path: "{{ kafka_download_dest }}"
+    state: directory
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+    mode: 0755
+
 - name: Download kafka from {{ kafka_download_url }}
   become: yes
   become_user: "{{ kafka_user }}"
