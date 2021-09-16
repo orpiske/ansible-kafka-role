@@ -1,2 +1,89 @@
 ---
-# tasks file for kafka-role
+- name: Load role variables
+  when: basic_server_common_packages is not defined
+  include_vars:
+    file: '{{ item }}'
+  with_first_found:
+    - vars/{{ ansible_distribution }}.yml
+    - vars/{{ ansible_os_family }}.yml
+
+- name: Download kafka from {{ kafka_download_url }}
+  tags:
+    - kafka
+    - download
+  get_url:
+    url: "{{ kafka_download_url }}"
+    dest: "{{ kafka_download_dest }}/{{ kafka_download_url | basename}}"
+    force: yes
+    validate_certs: "{{ kafka_validate_certs }}"
+
+- name: Create install directory
+  tags:
+    - logdir
+  file:
+    path: "{{ kafka_install_dest }}"
+    state: directory
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+    mode: 0755
+
+
+- name: Unzip downloaded distribution to {{ kafka_install_dest }}
+  tags:
+    - unarchive
+  unarchive:
+    src: "{{ kafka_download_dest }}/{{ kafka_download_url | basename }}"
+    dest: "{{ kafka_install_dest }}/"
+    remote_src: True
+    list_files: yes
+  register: archive_contents
+
+- name: Create link to Kafka install dir {{ kafka_install_dest }}/{{ kafka_install_link }}
+  tags:
+    - kafka
+    - link
+  file:
+    src: "{{ kafka_install_dest }}/{{ archive_contents.files[0] | dirname }}"
+    dest: "{{ kafka_install_dest }}/{{ kafka_install_link }}"
+    state: link
+    mode: 0755
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+    force: true
+
+- name: Configure Kafka Connect Standalone
+  tags:
+    - kafka
+    - configure
+  template:
+    src: templates/connect-standalone.properties.j2
+    dest: "{{ kafka_install_dest }}/{{ kafka_install_link }}/config/connect-standalone.properties"
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+    mode: 0644
+
+- name: Configure Kafka Connect Distributed
+  tags:
+    - kafka
+    - configure
+  template:
+    src: templates/connect-distributed.properties.j2
+    dest: "{{ kafka_install_dest }}/{{ kafka_install_link }}/config/connect-distributed.properties"
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+    mode: 0644
+
+- name: Configure Run Script
+  tags:
+    - kafka
+    - configure
+  template:
+    src: templates/run-{{ item }}.sh.j2
+    dest: "{{ kafka_install_dest }}/run-{{ item }}.sh"
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+    mode: 0755
+  with_items:
+    - kafka
+    - zookeeper
+    - connect-standalone
