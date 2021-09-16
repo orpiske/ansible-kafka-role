@@ -8,6 +8,8 @@
     - vars/{{ ansible_os_family }}.yml
 
 - name: Download kafka from {{ kafka_download_url }}
+  become: yes
+  become_user: "{{ kafka_user }}"
   tags:
     - kafka
     - download
@@ -18,6 +20,8 @@
     validate_certs: "{{ kafka_validate_certs }}"
 
 - name: Create install directory
+  become: yes
+  become_user: "{{ kafka_user }}"
   tags:
     - logdir
   file:
@@ -29,6 +33,8 @@
 
 
 - name: Unzip downloaded distribution to {{ kafka_install_dest }}
+  become: yes
+  become_user: "{{ kafka_user }}"
   tags:
     - unarchive
   unarchive:
@@ -39,6 +45,8 @@
   register: archive_contents
 
 - name: Create link to Kafka install dir {{ kafka_install_dest }}/{{ kafka_install_link }}
+  become: yes
+  become_user: "{{ kafka_user }}"
   tags:
     - kafka
     - link
@@ -52,6 +60,8 @@
     force: true
 
 - name: Configure Kafka Connect Standalone
+  become: yes
+  become_user: "{{ kafka_user }}"
   tags:
     - kafka
     - configure
@@ -63,6 +73,8 @@
     mode: 0644
 
 - name: Configure Kafka Connect Distributed
+  become: yes
+  become_user: "{{ kafka_user }}"
   tags:
     - kafka
     - configure
@@ -74,6 +86,8 @@
     mode: 0644
 
 - name: Configure Run Script
+  become: yes
+  become_user: "{{ kafka_user }}"
   tags:
     - kafka
     - configure

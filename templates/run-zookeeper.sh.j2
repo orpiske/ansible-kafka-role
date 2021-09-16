@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export KAFKA_HOME={{ kafka_install_dest }}/{{ kafka_install_link }}
+$KAFKA_HOME/bin/zookeeper-server-start.sh $KAFKA_HOME/config/zookeeper.properties

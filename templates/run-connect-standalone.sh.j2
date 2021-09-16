@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export KAFKA_HOME={{ kafka_install_dest }}/{{ kafka_install_link }}
+$KAFKA_HOME/bin/connect-standalone.sh $KAFKA_HOME/config/connect-standalone.properties $1
