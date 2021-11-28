@@ -113,3 +113,45 @@
     - kafka
     - zookeeper
     - connect-standalone
+
+- name: Ensure bin directory is allowed by SELinux
+  become: yes
+  warn: false
+  when: ansible_distribution == 'Fedora'
+  command: chcon -R -t bin_t {{ kafka_install_dest }}/{{ kafka_install_link }}/bin
+
+- name: Ensure bin directory is allowed by SELinux
+  become: yes
+  warn: false
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Fedora'
+  command: chcon -R -t bin_t {{ kafka_install_dest }}/{{ kafka_install_link }}/bin
+
+- name: Configure Systemd units
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Fedora'
+  become: yes
+  become_user: "{{ kafka_user }}"
+  tags:
+    - kafka
+    - systemd
+  template:
+    src: templates/{{ item }}.service.j2
+    dest: "/etc/systemd/system/{{ item }}@.service"
+    owner: "root"
+    group: "root"
+    mode: 0755
+  with_items:
+    - kafka
+    - zookeeper
+
+- name: Just force systemd to re-execute itself (2.8 and above)
+  ansible.builtin.systemd:
+    daemon_reexec: yes
+
+- name: Enable the zookeeper service
+  ansible.builtin.systemd:
+    name: zookeeper
+    enabled: true
+    state: started
+    scope: user
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ myuid }}"

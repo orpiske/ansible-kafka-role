@@ -1,0 +1,11 @@
+[Unit]
+Description=Zookeeper Service
+
+[Service]
+User=%i
+ExecStart={{ kafka_install_dest }}/{{ kafka_install_link }}/bin/zookeeper-server-start.sh {{ kafka_install_dest }}/{{ kafka_install_link }}/config/zookeeper.properties
+ExecStop={{ kafka_install_dest }}/{{ kafka_install_link }}/bin/zookeeper-server-stop.sh
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
