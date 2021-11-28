@@ -172,5 +172,3 @@
     enabled: true
     state: started
     scope: user
-  environment:
-    XDG_RUNTIME_DIR: "/run/user/{{ myuid }}"
