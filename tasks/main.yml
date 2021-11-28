@@ -43,6 +43,17 @@
     group: "{{ kafka_user }}"
     mode: 0755
 
+- name: Create data directory
+  become: yes
+  become_user: "{{ kafka_user }}"
+  tags:
+    - logdir
+  file:
+    path: "{{ kafka_data_dir }}"
+    state: directory
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+    mode: 0755
 
 - name: Unzip downloaded distribution to {{ kafka_install_dest }}
   become: yes
@@ -114,6 +125,22 @@
     - zookeeper
     - connect-standalone
 
+- name: Configure Kafka
+  become: yes
+  become_user: "{{ kafka_user }}"
+  tags:
+    - kafka
+    - configure
+  template:
+    src: templates/{{ item }}.properties.j2
+    dest: "{{ kafka_install_dest }}/config/{{ item }}.properties"
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+    mode: 0755
+  with_items:
+    - server
+    - zookeeper
+
 - name: Ensure bin directory is allowed by SELinux
   when: ansible_distribution == 'Fedora'
   become: yes
@@ -122,7 +149,6 @@
 - name: Configure Systemd units
   when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Fedora'
   become: yes
-  become_user: "{{ kafka_user }}"
   tags:
     - kafka
     - systemd
