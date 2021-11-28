@@ -166,9 +166,10 @@
   ansible.builtin.systemd:
     daemon_reexec: yes
 
-- name: Enable the zookeeper service
-  ansible.builtin.systemd:
-    name: zookeeper
-    enabled: true
-    state: started
-    scope: user
+- name: Enable Kafka Services
+  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Fedora'
+  become: yes
+  command: systemctl enable --now {{ item }}@{{ kafka_user }}
+  with_items:
+    - kafka
+    - zookeeper
