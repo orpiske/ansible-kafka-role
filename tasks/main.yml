@@ -133,7 +133,7 @@
     - configure
   template:
     src: templates/{{ item }}.properties.j2
-    dest: "{{ kafka_install_dest }}/config/{{ item }}.properties"
+    dest: "{{ kafka_install_dest }}/{{ kafka_install_link }}/config/config/{{ item }}.properties"
     owner: "{{ kafka_user }}"
     group: "{{ kafka_user }}"
     mode: 0755
