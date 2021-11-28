@@ -27,7 +27,7 @@
     - download
   get_url:
     url: "{{ kafka_download_url }}"
-    dest: "{{ kafka_download_dest }}/{{ kafka_download_url | basename}}"
+    dest: "{{ kafka_download_dest }}/{{ kafka_download_url | basename }}"
     force: yes
     validate_certs: "{{ kafka_validate_certs }}"
 
@@ -115,15 +115,8 @@
     - connect-standalone
 
 - name: Ensure bin directory is allowed by SELinux
-  become: yes
-  warn: false
   when: ansible_distribution == 'Fedora'
-  command: chcon -R -t bin_t {{ kafka_install_dest }}/{{ kafka_install_link }}/bin
-
-- name: Ensure bin directory is allowed by SELinux
   become: yes
-  warn: false
-  when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Fedora'
   command: chcon -R -t bin_t {{ kafka_install_dest }}/{{ kafka_install_link }}/bin
 
 - name: Configure Systemd units
