@@ -1,2 +1,3 @@
 ---
 # defaults file for kafka-role
+kafka_data_dir: /home/{{ kafka_user}}/var
