@@ -4,6 +4,7 @@ After=zookeeper.service
 
 [Service]
 User=%i
+EnvironmentFile={{ kafka_global_config_dir }}/kafka-env
 ExecStart={{ kafka_install_dest }}/{{ kafka_install_link }}/bin/kafka-server-start.sh {{ kafka_install_dest }}/{{ kafka_install_link }}/config/server.properties
 ExecStop={{ kafka_install_dest }}/{{ kafka_install_link }}/bin/kafka-server-stop.sh
 Restart=on-abort

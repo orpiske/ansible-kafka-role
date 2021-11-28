@@ -141,6 +141,31 @@
     - server
     - zookeeper
 
+- name: Create global config directory
+  become: yes
+  tags:
+    - logdir
+  file:
+    path: "{{ kafka_global_config_dir }}"
+    state: directory
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+    mode: 0755
+
+- name: Create service configuration Kafka
+  become: yes
+  tags:
+    - kafka
+    - configure
+  template:
+    src: templates/{{ item }}.sh.j2
+    dest: "{{ kafka_global_config_dir }}/{{ item }}"
+    owner: "{{ kafka_user }}"
+    group: "{{ kafka_user }}"
+    mode: 0644
+  with_items:
+    - kafka-env
+
 - name: Ensure bin directory is allowed by SELinux
   when: ansible_distribution == 'Fedora'
   become: yes
