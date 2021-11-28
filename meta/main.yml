@@ -1,6 +1,6 @@
 galaxy_info:
   author: Otavio R. Piske
-  description: DDNS for redhat
+  description: Kafka role
   company: None
 
   # If the issue tracker for your role is not on github, uncomment the
