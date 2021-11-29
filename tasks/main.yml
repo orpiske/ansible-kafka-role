@@ -182,7 +182,7 @@
     dest: "/etc/systemd/system/{{ item }}@.service"
     owner: "root"
     group: "root"
-    mode: 0755
+    mode: 0644
   with_items:
     - kafka
     - zookeeper
