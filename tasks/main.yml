@@ -200,6 +200,7 @@
     - zookeeper
 
 - name: Just force systemd to re-execute itself (2.8 and above)
+  become: true
   ansible.builtin.systemd:
     daemon_reexec: yes
 
