@@ -11,7 +11,7 @@
   tags:
     - basic
     - packages
-  become: yes
+  become: true
   when:
     - ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Fedora'
   package:
@@ -20,7 +20,7 @@
 
 
 - name: Create download directory
-  become: yes
+  become: true
   become_user: "{{ kafka_user }}"
   tags:
     - download
@@ -32,7 +32,7 @@
     mode: 0755
 
 - name: Download kafka from {{ kafka_download_url }}
-  become: yes
+  become: true
   become_user: "{{ kafka_user }}"
   tags:
     - kafka
@@ -44,7 +44,7 @@
     validate_certs: "{{ kafka_validate_certs }}"
 
 - name: Create install directory
-  become: yes
+  become: true
   become_user: "{{ kafka_user }}"
   tags:
     - logdir
@@ -56,7 +56,7 @@
     mode: 0755
 
 - name: Create data directory
-  become: yes
+  become: true
   become_user: "{{ kafka_user }}"
   tags:
     - logdir
@@ -68,7 +68,7 @@
     mode: 0755
 
 - name: Unzip downloaded distribution to {{ kafka_install_dest }}
-  become: yes
+  become: true
   become_user: "{{ kafka_user }}"
   tags:
     - unarchive
@@ -80,7 +80,7 @@
   register: archive_contents
 
 - name: Create link to Kafka install dir {{ kafka_install_dest }}/{{ kafka_install_link }}
-  become: yes
+  become: true
   become_user: "{{ kafka_user }}"
   tags:
     - kafka
@@ -95,7 +95,7 @@
     force: true
 
 - name: Configure Kafka Connect Standalone
-  become: yes
+  become: true
   become_user: "{{ kafka_user }}"
   tags:
     - kafka
@@ -108,7 +108,7 @@
     mode: 0644
 
 - name: Configure Kafka Connect Distributed
-  become: yes
+  become: true
   become_user: "{{ kafka_user }}"
   tags:
     - kafka
@@ -121,7 +121,7 @@
     mode: 0644
 
 - name: Configure Run Script
-  become: yes
+  become: true
   become_user: "{{ kafka_user }}"
   tags:
     - kafka
@@ -138,7 +138,7 @@
     - connect-standalone
 
 - name: Configure Kafka
-  become: yes
+  become: true
   become_user: "{{ kafka_user }}"
   tags:
     - kafka
@@ -154,7 +154,7 @@
     - zookeeper
 
 - name: Create global config directory
-  become: yes
+  become: true
   tags:
     - logdir
   file:
@@ -165,7 +165,7 @@
     mode: 0755
 
 - name: Create service configuration Kafka
-  become: yes
+  become: true
   tags:
     - kafka
     - configure
@@ -180,12 +180,12 @@
 
 - name: Ensure bin directory is allowed by SELinux
   when: ansible_distribution == 'Fedora'
-  become: yes
+  become: true
   command: chcon -R -t bin_t {{ kafka_install_dest }}/{{ kafka_install_link }}/bin
 
 - name: Configure Systemd units
   when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Fedora'
-  become: yes
+  become: true
   tags:
     - kafka
     - systemd
@@ -205,7 +205,7 @@
 
 - name: Enable Kafka Services
   when: ansible_distribution == 'RedHat' or ansible_distribution == 'CentOS' or ansible_distribution == 'Fedora'
-  become: yes
+  become: true
   command: systemctl enable --now {{ item }}@{{ kafka_user }}
   with_items:
     - kafka
