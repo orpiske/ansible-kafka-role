@@ -7,3 +7,4 @@ kafka_default_download_dest: /home/{{ kafka_user }}/tmp
 kafka_default_install_dest: /home/{{ kafka_user}}/tools
 kafka_default_plugin_path: /home/{{ kafka_user}}/tools/camel-kafka-connectors
 kafka_global_config_dir: /etc/kafka/
+kafka_on_selinux: true

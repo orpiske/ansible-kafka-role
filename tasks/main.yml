@@ -179,7 +179,9 @@
     - kafka-env
 
 - name: Ensure bin directory is allowed by SELinux
-  when: ansible_distribution == 'Fedora'
+  when:
+    - ansible_distribution == 'Fedora'
+    - kafka_on_selinux == true
   become: true
   command: chcon -R -t bin_t {{ kafka_install_dest }}/{{ kafka_install_link }}/bin
 
